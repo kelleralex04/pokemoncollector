@@ -9,6 +9,10 @@
         <p>Type: {{ pokemon.type }}</p>
         <p>Trainer: {{ pokemon.trainer }}</p>
     </div>
+    <div class="card-action">
+        <a href="{% url 'pokemon_update' pokemon.id %}">Edit</a>
+        <a href="{% url 'pokemon_delete' pokemon.id %}">Delete</a>
+    </div>
 </div>
 
 {% endblock %}
