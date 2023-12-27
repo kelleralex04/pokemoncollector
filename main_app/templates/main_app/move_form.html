@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if object %}
+        <h1>Edit <span class="teal-text">{{object.name}}</span></h1>
+    {% else %}
+        <h1>Add Move</h1>
+    {% endif %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit!" class="btn">
+    </form>
+
+    <script>
+        const selectType = document.getElementById('id_type');
+        M.FormSelect.init(selectType);
+        
+        const selectCategory = document.getElementById('id_category');
+        M.FormSelect.init(selectCategory);
+        
+    </script>
+{% endblock %}

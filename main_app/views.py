@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 
-from .models import Pokemon
+from .models import Pokemon, Move
 from .forms import BattleForm
 # Create your views here.
 
@@ -20,9 +21,12 @@ def pokemon_index(request):
 
 def pokemon_detail(request, pokemon_id):
     pokemon = Pokemon.objects.get(id=pokemon_id)
+    id_list = pokemon.moves.all().values_list('id')
+    unknown_moves = Move.objects.exclude(id__in=id_list)
     battle_form = BattleForm()
     return render(request, 'pokemon/detail.html', {
-        'pokemon': pokemon, 'battle_form': battle_form
+        'pokemon': pokemon, 'battle_form': battle_form,
+        'moves': unknown_moves
     })
 
 def add_battle(request, pokemon_id):
@@ -46,7 +50,25 @@ class PokemonDelete(DeleteView):
     model = Pokemon
     success_url = '/pokemon'
 
+class MoveList(ListView):
+    model = Move
 
+class MoveDetail(DetailView):
+    model = Move
 
+class MoveUpdate(UpdateView):
+    model = Move
+    fields = ['name', 'type', 'power', 'accuracy', 'pp', 'category']
 
+class MoveDelete(DeleteView):
+    model = Move
+    success_url = '/moves'
 
+class MoveCreate(CreateView):
+    model = Move
+    fields = '__all__'
+    success_url = '/moves'
+
+def assoc_move(request, pokemon_id, move_id):
+    Pokemon.objects.get(id=pokemon_id).moves.add(move_id)
+    return redirect('detail', pokemon_id=pokemon_id)
